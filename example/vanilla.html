@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Vanila example @mappable-world/mappable-tiles-generator</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+        <script src="https://js.api.mappable.world/3.0/?apikey=%APIKEY%&lang=en_US"></script>
+        <script src="common.js"></script>
+        <script>
+            window.map = null;
+
+            main();
+            async function main() {
+                const params = await fetch('./tiles/params.json').then((data) => data.json());
+                await mappable.ready;
+
+                const {MMap, MMapTileDataSource, MMapLayer, MMapControls} = mappable;
+
+                const {MMapZoomControl} = await mappable.import('@mappable-world/mappable-controls@0.0.1');
+                const {Cartesian} = await mappable.import('@mappable-world/mappable-cartesian-projection');
+
+                const entitesProps = getEntitiesProps(Cartesian, params);
+                map = new MMap(document.getElementById('app'), entitesProps.map);
+
+                map.addChild(new MMapTileDataSource(entitesProps.tileDataSource));
+                map.addChild(new MMapLayer(entitesProps.layer));
+
+                map.addChild(
+                    new MMapControls({position: 'right'}).addChild(new MMapZoomControl({}))
+                );
+            }
+        </script>
+
+        <link rel="stylesheet" href="common.css" />
+    </head>
+    <body>
+        <div id="app"></div>
+    </body>
+</html>
