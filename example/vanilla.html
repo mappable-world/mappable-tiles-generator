@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
     <head>
         <title>Vanila example @mappable-world/mappable-tiles-generator</title>
@@ -25,9 +25,7 @@
                 map.addChild(new MMapTileDataSource(entitesProps.tileDataSource));
                 map.addChild(new MMapLayer(entitesProps.layer));
 
-                map.addChild(
-                    new MMapControls({position: 'right'}).addChild(new MMapZoomControl({}))
-                );
+                map.addChild(new MMapControls({position: 'right'}).addChild(new MMapZoomControl({})));
             }
         </script>
 

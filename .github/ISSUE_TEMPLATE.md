@@ -1,11 +1,11 @@
 <!-- BUGS: Please use this template -->
 <!-- QUESTIONS: This is not a general support forum! Ask Qs at http://stackoverflow.com/questions/tagged/@mappable-world/mappable-tiles-generator -->
 
-**@mappable-world/mappable-tiles-generator Version:**  xxxxx
+**@mappable-world/mappable-tiles-generator Version:** xxxxx
 
-**Browser:**  <!-- Chrome/IE/Safary/FF -->
-**OS:**  <!-- Windows/Mac/Linux -->
-**Is React App:**  <!-- True/False -->
+**Browser:** <!-- Chrome/IE/Safary/FF -->
+**OS:** <!-- Windows/Mac/Linux -->
+**Is React App:** <!-- True/False -->
 
 **Code**
 

@@ -8,11 +8,11 @@ mappable.import.loaders.unshift(async (pkg) => {
 
     await mappable.import.script(`https://unpkg.com/${pkg}/dist/index.js`);
 
-    return window[pkg];
-})
+    return window['@mappable-world/mappable-cartesian-projection'];
+});
 
 const BOUNDS = [
-    [54.58311, 25.99850],
+    [54.58311, 25.9985],
     [56.30248, 24.47889]
 ];
 
@@ -35,6 +35,6 @@ function getEntitiesProps(CartesianProjection, params) {
                 fetchTile: `tiles/${params.tiles.pathTemplate}`
             }
         },
-        layer:  {source: 'image', type: 'tile'}
-    }
+        layer: {source: 'image', type: 'tile'}
+    };
 }

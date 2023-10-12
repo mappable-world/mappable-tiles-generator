@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
     <head>
         <title>React example @mappable-world/mappable-tiles-generator</title>
@@ -7,7 +7,7 @@
         <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
         <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
         <script crossorigin src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-        <script src='https://js.api.mappable.world/3.0/?apikey=%APIKEY%&lang=en_US'></script>
+        <script src="https://js.api.mappable.world/3.0/?apikey=%APIKEY%&lang=en_US"></script>
         <script src="common.js"></script>
 
         <script type="text/babel">
@@ -22,16 +22,13 @@
                 ]);
                 const reactify = mappableReact.reactify.bindTo(React, ReactDOM);
 
-                const {
-                    MMap,
-                    MMapTileDataSource,
-                    MMapLayer,
-                    MMapControls
-                } = reactify.module(mappable);
+                const {MMap, MMapTileDataSource, MMapLayer, MMapControls} = reactify.module(mappable);
 
                 const {useState, useCallback} = React;
 
-                const {MMapZoomControl} = reactify.module(await mappable.import('@mappable-world/mappable-controls@0.0.1'));
+                const {MMapZoomControl} = reactify.module(
+                    await mappable.import('@mappable-world/mappable-controls@0.0.1')
+                );
                 const {Cartesian} = await mappable.import('@mappable-world/mappable-cartesian-projection');
 
                 const entitesProps = getEntitiesProps(Cartesian, params);

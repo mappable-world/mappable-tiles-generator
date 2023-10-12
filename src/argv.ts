@@ -53,6 +53,12 @@ export const argv = yargs
         demandOption: false,
         default: false
     })
+    .option('backgroundColor', {
+        type: 'string',
+        alias: ['background', 'b'],
+        demandOption: false,
+        default: '#00000000'
+    })
     .version(require('../package').version)
     .alias('version', 'v')
     .help('help')

@@ -21,8 +21,7 @@ if (require.main === module) {
         options.tileSize = argv.tileSize;
     }
 
-    tilegen.generateTiles(argv.source, argv.destination, options)
-        .catch(console.log);
+    tilegen.generateTiles(argv.source, argv.destination, options).catch(console.log);
 }
 
 export * from './tilegen';
