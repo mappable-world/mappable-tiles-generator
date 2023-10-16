@@ -2,15 +2,15 @@
     "version": "0.0.1-beta.1",
     "name": "@mappable-world/mappable-tiles-generator",
     "description": "Mappable Maps JS API 3.0 Tile generator CLI utility",
-    "types": "./dist/types/index.d.ts",
-    "main": "./dist/esm/index.js",
+    "types": "./dist/index.d.ts",
+    "main": "./dist/index.js",
     "scripts": {
         "test": "jest",
         "lint": "eslint ./",
         "build": "rm -rf ./dist && tsc --project tsconfig.build.json",
         "watch": "npm run build -- --watch",
         "examples:image:load": "curl 'https://stsci-opo.org/STScI-01GA6KKWG229B16K4Q38CH3BXS.png' > example/image.png",
-        "examples:tiles:gererate": "node dist/index.js --s example/image.png --d example/tiles",
+        "examples:tiles:gererate": "rm -rf example/tiles && node dist/index.js --s example/image.png --d example/tiles",
         "examples:build": "npm run examples:image:load && npm run examples:tiles:gererate",
         "examples": "webpack serve",
         "bump": "npm version prerelease --preid=beta --no-git-tag-version && npm run bump:git",
@@ -18,7 +18,6 @@
     },
     "devDependencies": {
         "@mappable-world/mappable-cli": "^0.0.19",
-        "@mappable-world/mappable-types": "^0.0.10",
         "@types/got": "9.6.12",
         "@types/jest": "29.5.3",
         "@types/jsdom": "21.1.1",
@@ -41,11 +40,12 @@
         "webpack-dev-server": "4.15.1"
     },
     "dependencies": {
+        "@mappable-world/mappable-types": "^0.0.10",
         "jimp": "0.22.10",
         "yargs": "17.7.2"
     },
     "license": "Apache-2",
     "bin": {
-        "mappable-cli": "./dist/index.js"
-      }
+        "mappable-tiles-generator": "./dist/index.js"
+    }
 }

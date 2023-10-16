@@ -6,7 +6,7 @@ To get started:
 
 ```sh
 nvm use
-npm start
+npm run watch
 ```
 
 or so if you didn't create the `.env` file
@@ -26,6 +26,18 @@ For the final build:
 ```sh
 npm run build
 ```
+
+## Examples
+
+> [!NOTE]
+> For examples we use Carina Nebula image with copyrights from [webbtelescope.org](https://webbtelescope.org/contents/media/images/2022/031/01G77PKB8NKR7S8Z6HBXMYATGJ)
+
+Please run:
+
+- `npm run build # or watch`. This command will built this utility
+- `npm run examples:build`. This will load image and generate tiles
+- `npm run examples`. This will serve examples
+
 
 ## GitHub actions
 

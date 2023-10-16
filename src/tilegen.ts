@@ -1,7 +1,7 @@
+import type {GenericBounds, MMapProps, MapMode, WorldOptions, ZoomRange} from '@mappable-world/mappable-types';
 import fs from 'node:fs';
 import path from 'node:path';
 import Jimp from 'jimp';
-import type {GenericBounds, MMapProps, MapMode, WorldOptions, ZoomRange} from '@mappable-world/mappable-types';
 
 export interface GenerationOptions {
     tileSize?: number;
@@ -31,9 +31,6 @@ export async function generateTiles(source: string, destination: string, options
     const {tileSize, shouldCenter, withEmptyTiles, pathTemplate, backgroundColor} = computedOptions;
     let image = await Jimp.read(source);
 
-    await fs.promises.rm(destination, {recursive: true, force: true, maxRetries: 1});
-    await fs.promises.mkdir(destination);
-
     const maxImageZoom = Math.ceil(Math.log2(Math.max(image.getWidth(), image.getHeight()) / tileSize));
     const zoomRange = {
         min: computedOptions.zoomRange.min ?? 0,
@@ -43,11 +40,8 @@ export async function generateTiles(source: string, destination: string, options
     const maxZoomImage = await getMaxZoomImage(image, {zoomRange, tileSize, maxImageZoom, shouldCenter, backgroundColor});
 
     const imageSize: ImageSize = {width: image.getWidth(), height: image.getHeight()};
-    const params = getParams({imageSize, shouldCenter, maxImageZoom, zoomRange, tileSize, pathTemplate});
 
-    const filePromises: Promise<unknown>[] = [
-        fs.promises.writeFile(path.join(destination, 'params.json'), JSON.stringify(params, null, 4))
-    ];
+    const filePromises: Promise<unknown>[] = [];
     const tileBackground = await Jimp.create(tileSize, tileSize, backgroundColor);
 
     for (let zoom = zoomRange.max; zoom >= zoomRange.min; zoom--) {
@@ -82,6 +76,9 @@ export async function generateTiles(source: string, destination: string, options
             }
         }
     }
+
+    const params = getParams({imageSize, shouldCenter, maxImageZoom, zoomRange, tileSize, pathTemplate});
+    filePromises.push(fs.promises.writeFile(path.join(destination, 'params.json'), JSON.stringify(params, null, 4)));
 
     await Promise.all(filePromises);
 }

@@ -1,12 +1,16 @@
+#! /usr/bin/env node
+
 import * as tilegen from './tilegen';
 import {argv} from './argv';
 
 if (require.main === module) {
     const options: tilegen.GenerationOptions = {
         zoomRange: {},
+        backgroundColor: argv.backgroundColor,
+        pathTemplate: argv.pathTemplate,
         shouldCenter: argv.shouldCenter,
-        withEmptyTiles: argv.withEmptyTiles,
-        pathTemplate: argv.pathTemplate
+        tileSize: argv.tileSize,
+        withEmptyTiles: argv.withEmptyTiles
     };
 
     if (argv.minZoom) {

@@ -1,23 +1,72 @@
-# Tile generator CLI utility
+# Mappable Tile generator CLI utility
 
 [![npm version](https://badge.fury.io/js/@mappable-world/mappable-tiles-generator.svg)](https://badge.fury.io/js/@mappable-world/mappable-tiles-generator)
 [![npm](https://img.shields.io/npm/dm/@mappable-world/mappable-tiles-generator.svg)](https://www.npmjs.com/package/@mappable-world/mappable-tiles-generator)
+[![Build Status](https://github.com/mappable-world/mappable-tiles-generator/workflows/Run%20tests/badge.svg)](https://github.com/mappable-world/mappable-tiles-generator/actions/workflows/tests.yml)
 
-## How use
+This tool will help you in splitting a large image into smaller tiles for use on a [Mappable](https://mappable.world) map with accurate scale.
 
-The package is located in the `dist` folder:
+Your image will be scaled automatically for each level of zoom (scheme is presented below). At maximum zoom level, the image will show pixel-to-pixel detail. If you would like to see the image at a higher level of zoom, you can use the `maxZoom` option to enlarge it. Additionally, you can choose to restrict the minimum zoom level for tile generation by setting the `minZoom` option.
 
-- `dist/types` TypeScript types
-- `dist/esm` es6 modules for direct connection in your project
-- `dist/index.js` Mappable JS Module
+![tiling scheme](./tiling%20scheme.png)
 
-## Examples
+By default, we do not center the image and do not generate empty tiles. If you need it, specify the `shouldCenter` and `withEmptyTiles`` options respectively.
+
+The utility also generates a `params.json` file with presets for correct display of your image on a map. You can see an [example](./example/vanilla.html) of using this utility with [@mappable-world/mappable-cartesian-projection](https://github.com/mappable-world/mappable-cartesian-projection) package.
 
 > [!NOTE]
-> For examples we use Carina Nebula image with copyrights from [webbtelescope.org](https://webbtelescope.org/contents/media/images/2022/031/01G77PKB8NKR7S8Z6HBXMYATGJ)
+> For more information on how to run the examples locally, please see the [CONTRIBUTING.md](./CONTRIBUTING.md#examples)
 
-Please run:
+## Install
 
-- `npm run build # or watch`. This command will built this utility
-- `npm run examples:build`. This will load image and generate tiles
-- `npm run examples`. This will serve examples
+Install Tile generator CLI to be used in your project with
+
+```bash
+npm install --save-dev @mappable-world/mappable-tiles-generator
+```
+
+And then you should be able to run the CLI with
+
+```bash
+npx mappable-tiles-generator --help
+```
+
+## Usage
+
+You can use it via terminal:
+
+```bash
+Options:
+  -s, --source, --src                  Source image path     [string] [required]
+  -d, --destination, --dst             Destination tiles folder path
+                                                   [string] [default: "./tiles"]
+      --pathTemplate, --path           Template pathname for the generated tile
+                                       files
+                                     [string] [default: "{{z}}/{{y}}-{{x}}.png"]
+      --minZoom, --min                 Minimum zoom level for tile generation
+                                                                        [number]
+      --maxZoom, --max                 Maximum zoom level for tile generation
+                                                                        [number]
+      --tileSize, --size               Width and height tile size
+                                                         [number] [default: 256]
+  -c, --shouldCenter, --center         Should center image be in tail grid
+                                                      [boolean] [default: false]
+  -e, --withEmptyTiles, --emptyTiles   Should generate background empty tiles
+                                       around the image
+                                                      [boolean] [default: false]
+  -b, --backgroundColor, --background  Background color for completely or
+                                       partially empty tiles
+                                                 [string] [default: "#00000000"]
+  -v, --version                        Show version number             [boolean]
+  -h, --help                           Show help                       [boolean]
+
+License: Apache-2
+```
+
+Or you can also use it in code:
+
+```js
+import {generateTiles} from '@mappable-world/mappable-tiles-generator';
+
+generateTiles(source, destination, {shouldCenter: true});
+```
