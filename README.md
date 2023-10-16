@@ -1,6 +1,6 @@
 # Mappable Tile generator CLI utility
 
-[![npm version](https://badge.fury.io/js/@mappable-world/mappable-tiles-generator.svg)](https://badge.fury.io/js/@mappable-world/mappable-tiles-generator)
+[![npm version](https://badge.fury.io/js/@mappable-world%2Fmappable-tiles-generator.svg)](https://badge.fury.io/js/@mappable-world%2Fmappable-tiles-generator)
 [![npm](https://img.shields.io/npm/dm/@mappable-world/mappable-tiles-generator.svg)](https://www.npmjs.com/package/@mappable-world/mappable-tiles-generator)
 [![Build Status](https://github.com/mappable-world/mappable-tiles-generator/workflows/Run%20tests/badge.svg)](https://github.com/mappable-world/mappable-tiles-generator/actions/workflows/tests.yml)
 
