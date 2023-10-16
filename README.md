@@ -14,7 +14,8 @@ By default, we do not center the image and do not generate empty tiles. If you n
 
 The utility also generates a `params.json` file with presets for correct display of your image on a map. You can see an [example](https://github.com/mappable-world/mappable-tiles-generator/blob/main/example/vanilla.html) of using this utility with [@mappable-world/mappable-cartesian-projection](https://github.com/mappable-world/mappable-cartesian-projection) package.
 
-> [!NOTE]
+> **_NOTE:_**
+>
 > For more information on how to run the examples locally, please see the [CONTRIBUTING.md](./CONTRIBUTING.md#examples)
 
 ## Install
