@@ -8,11 +8,11 @@ This tool will help you in splitting a large image into smaller tiles for use on
 
 Your image will be scaled automatically for each level of zoom (scheme is presented below). At maximum zoom level, the image will show pixel-to-pixel detail. If you would like to see the image at a higher level of zoom, you can use the `maxZoom` option to enlarge it. Additionally, you can choose to restrict the minimum zoom level for tile generation by setting the `minZoom` option.
 
-![tiling scheme](./tiling%20scheme.png)
+![tiling scheme](https://github.com/mappable-world/mappable-tiles-generator/blob/main/tiling%20scheme.png?raw=true)
 
 By default, we do not center the image and do not generate empty tiles. If you need it, specify the `shouldCenter` and `withEmptyTiles`` options respectively.
 
-The utility also generates a `params.json` file with presets for correct display of your image on a map. You can see an [example](./example/vanilla.html) of using this utility with [@mappable-world/mappable-cartesian-projection](https://github.com/mappable-world/mappable-cartesian-projection) package.
+The utility also generates a `params.json` file with presets for correct display of your image on a map. You can see an [example](https://github.com/mappable-world/mappable-tiles-generator/blob/main/example/vanilla.html) of using this utility with [@mappable-world/mappable-cartesian-projection](https://github.com/mappable-world/mappable-cartesian-projection) package.
 
 > [!NOTE]
 > For more information on how to run the examples locally, please see the [CONTRIBUTING.md](./CONTRIBUTING.md#examples)
