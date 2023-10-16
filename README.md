@@ -36,7 +36,7 @@ npx mappable-tiles-generator --help
 
 You can use it via terminal:
 
-```bash
+```
 Options:
   -s, --source, --src                  Source image path     [string] [required]
   -d, --destination, --dst             Destination tiles folder path
