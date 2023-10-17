@@ -47,5 +47,16 @@
     "license": "Apache-2",
     "bin": {
         "mappable-tiles-generator": "./dist/index.js"
-    }
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/mappable-world/mappable-tiles-generator.git"
+    },
+    "keywords": [
+        "mappable",
+        "mappable-world",
+        "utils",
+        "tiles-generator",
+        "mappable-tiles-generator"
+    ]
 }

@@ -16,7 +16,7 @@ The utility also generates a `params.json` file with presets for correct display
 
 > **_NOTE:_**
 >
-> For more information on how to run the examples locally, please see the [CONTRIBUTING.md](./CONTRIBUTING.md#examples)
+> For more information on how to run the examples locally, please see the [CONTRIBUTING.md](https://github.com/mappable-world/mappable-tiles-generator/blob/main/CONTRIBUTING.md#examples)
 
 ## Install
 
