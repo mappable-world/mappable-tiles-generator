@@ -1,5 +1,5 @@
 {
-    "version": "0.0.3",
+    "version": "0.0.4",
     "name": "@mappable-world/mappable-tiles-generator",
     "description": "Mappable Maps JS API 3.0 Tile generator CLI utility",
     "types": "./dist/index.d.ts",
