@@ -10,7 +10,7 @@ Your image will be scaled automatically for each level of zoom (scheme is presen
 
 ![tiling scheme](https://github.com/mappable-world/mappable-tiles-generator/blob/main/tiling%20scheme.png?raw=true)
 
-By default, we do not center the image and do not generate empty tiles. If you need it, specify the `shouldCenter` and `withEmptyTiles`` options respectively.
+By default, we do not center the image and do not generate empty tiles. If you need it, specify the `shouldCenter` and `withEmptyTiles` options respectively.
 
 The utility also generates a `params.json` file with presets for correct display of your image on a map. You can see an [example](https://github.com/mappable-world/mappable-tiles-generator/blob/main/example/vanilla.html) of using this utility with [@mappable-world/mappable-cartesian-projection](https://github.com/mappable-world/mappable-cartesian-projection) package.
 
