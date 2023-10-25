@@ -45,10 +45,10 @@ Please run:
 After you create a new tag, or just push changes to the server, ci will be launched
 
 ```sh
-npm version prerelease --preid=beta --no-git-tag-version
+npm version --no-git-tag-version
 git add --all
 git commit -m "New version"
-git tag 0.0.1-beta.2
+git tag 0.0.2
 git push --tags origin HEAD:main
 ```
 

@@ -1,5 +1,5 @@
 <!-- BUGS: Please use this template -->
-<!-- QUESTIONS: This is not a general support forum! Ask Qs at http://stackoverflow.com/questions/tagged/@mappable-world/mappable-tiles-generator -->
+<!-- QUESTIONS: This is not a general support forum! Ask Qs at http://stackoverflow.com/questions/tagged/mappable-tiles-generator -->
 
 **@mappable-world/mappable-tiles-generator Version:** xxxxx
 
