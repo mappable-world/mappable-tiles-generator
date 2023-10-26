@@ -1,0 +1,62 @@
+{
+    "version": "0.0.4",
+    "name": "@mappable-world/mappable-tiles-generator",
+    "description": "Mappable Maps JS API 3.0 Tile generator CLI utility",
+    "types": "./dist/index.d.ts",
+    "main": "./dist/index.js",
+    "scripts": {
+        "test": "jest",
+        "lint": "eslint ./",
+        "build": "rm -rf ./dist && tsc --project tsconfig.build.json",
+        "watch": "npm run build -- --watch",
+        "examples:image:load": "curl 'https://stsci-opo.org/STScI-01GA6KKWG229B16K4Q38CH3BXS.png' > example/image.png",
+        "examples:tiles:gererate": "rm -rf example/tiles && node dist/index.js --s example/image.png --d example/tiles",
+        "examples:build": "npm run examples:image:load && npm run examples:tiles:gererate",
+        "examples": "webpack serve",
+        "bump": "npm version patch --no-git-tag-version && npm run bump:git",
+        "bump:git": "git add --all && git commit -m \"New version $npm_package_version\" && git tag $npm_package_version && git push --tags origin HEAD:main"
+    },
+    "devDependencies": {
+        "@mappable-world/mappable-cli": "^0.0.19",
+        "@types/got": "9.6.12",
+        "@types/jest": "29.5.3",
+        "@types/jsdom": "21.1.1",
+        "@typescript-eslint/eslint-plugin": "6.0.0",
+        "@typescript-eslint/parser": "6.0.0",
+        "cross-fetch": "4.0.0",
+        "dotenv": "16.3.1",
+        "eslint": "8.44.0",
+        "eslint-config-prettier": "8.8.0",
+        "eslint-plugin-prettier": "4.2.1",
+        "got": "11.8.6",
+        "identity-obj-proxy": "3.0.0",
+        "jest": "29.6.1",
+        "jsdom": "22.1.0",
+        "prettier": "3.0.0",
+        "ts-jest": "29.1.1",
+        "typescript": "5.1.6",
+        "webpack": "5.88.1",
+        "webpack-cli": "5.1.4",
+        "webpack-dev-server": "4.15.1"
+    },
+    "dependencies": {
+        "@mappable-world/mappable-types": "^0.0.10",
+        "jimp": "0.22.10",
+        "yargs": "17.7.2"
+    },
+    "license": "Apache-2",
+    "bin": {
+        "mappable-tiles-generator": "./dist/index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/mappable-world/mappable-tiles-generator.git"
+    },
+    "keywords": [
+        "mappable",
+        "mappable-world",
+        "utils",
+        "tiles-generator",
+        "mappable-tiles-generator"
+    ]
+}
