@@ -1,4 +1,5 @@
 import * as yargs from 'yargs';
+import {defaultOptions} from './tilegen';
 
 export const argv = yargs
     .strict()
@@ -19,7 +20,7 @@ export const argv = yargs
         type: 'string',
         alias: 'path',
         demandOption: false,
-        default: '{{z}}/{{y}}-{{x}}.png',
+        default: defaultOptions.pathTemplate,
         description: 'Template pathname for the generated tile files'
     })
     .option('minZoom', {
@@ -40,28 +41,28 @@ export const argv = yargs
         type: 'number',
         alias: 'size',
         demandOption: false,
-        default: 256,
+        default: defaultOptions.tileSize,
         description: 'Width and height tile size'
     })
     .option('shouldCenter', {
         type: 'boolean',
         alias: ['center', 'c'],
         demandOption: false,
-        default: false,
+        default: defaultOptions.shouldCenter,
         description: 'Should center image be in tail grid'
     })
     .option('withEmptyTiles', {
         type: 'boolean',
         alias: ['emptyTiles', 'e'],
         demandOption: false,
-        default: false,
+        default: defaultOptions.withEmptyTiles,
         description: 'Should generate background empty tiles around the image'
     })
     .option('backgroundColor', {
         type: 'string',
         alias: ['background', 'b'],
         demandOption: false,
-        default: '#00000000',
+        default: defaultOptions.backgroundColor,
         description: 'Background color for completely or partially empty tiles'
     })
     .version(require('../package').version)

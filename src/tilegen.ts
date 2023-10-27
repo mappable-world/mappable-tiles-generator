@@ -17,7 +17,7 @@ export interface ImageSize {
     height: number;
 }
 
-const defaultOptions: Required<GenerationOptions> = {
+export const defaultOptions: Required<GenerationOptions> = {
     tileSize: 256,
     zoomRange: {},
     shouldCenter: false,
@@ -25,6 +25,15 @@ const defaultOptions: Required<GenerationOptions> = {
     backgroundColor: '#00000000',
     pathTemplate: '{{z}}/{{y}}-{{x}}.png'
 };
+
+interface Configuration {
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+    tilePath: string;
+    scale: number;
+}
 
 export async function generateTiles(source: string, destination: string, options: GenerationOptions): Promise<void> {
     const computedOptions = {...defaultOptions, ...options};
@@ -41,12 +50,9 @@ export async function generateTiles(source: string, destination: string, options
 
     const imageSize: ImageSize = {width: image.getWidth(), height: image.getHeight()};
 
-    const filePromises: Promise<unknown>[] = [];
-    const tileBackground = await Jimp.create(tileSize, tileSize, backgroundColor);
+    const configurations: Configuration[] = [];
 
     for (let zoom = zoomRange.max; zoom >= zoomRange.min; zoom--) {
-        const zoomImage =
-            zoom === zoomRange.max ? maxZoomImage : maxZoomImage.resize(maxZoomImage.getWidth() / 2, Jimp.AUTO);
         const [minX, minY, maxX, maxY] = getTilesRange({
             zoom,
             maxImageZoom,
@@ -55,32 +61,61 @@ export async function generateTiles(source: string, destination: string, options
             shouldCenter,
             imageSize
         });
+        const zoomTileSize = tileSize * Math.pow(2, zoomRange.max - zoom);
 
         for (let x = minX; x < maxX; x++) {
             for (let y = minY; y < maxY; y++) {
-                const left = x * tileSize;
-                const top = y * tileSize;
-                const width = Math.min(tileSize, zoomImage.getWidth() - left);
-                const height = Math.min(tileSize, zoomImage.getHeight() - top);
+                const left = x * zoomTileSize;
+                const top = y * zoomTileSize;
+                const width = Math.min(zoomTileSize, maxZoomImage.getWidth() - left);
+                const height = Math.min(zoomTileSize, maxZoomImage.getHeight() - top);
+                const scale = 1 / Math.pow(2, maxImageZoom - zoom);
                 const tilePath = pathTemplate
                     .replace('{{x}}', String(x))
                     .replace('{{y}}', String(y))
                     .replace('{{z}}', String(zoom));
 
-                filePromises.push(
-                    tileBackground
-                        .clone()
-                        .blit(zoomImage, 0, 0, left, top, width, height)
-                        .writeAsync(path.join(destination, tilePath))
-                );
+                configurations.push({left, top, width, height, scale, tilePath});
             }
         }
     }
 
-    const params = getParams({imageSize, shouldCenter, maxImageZoom, zoomRange, tileSize, pathTemplate});
-    filePromises.push(fs.promises.writeFile(path.join(destination, 'params.json'), JSON.stringify(params, null, 4)));
+    const tileBackground = await Jimp.create(tileSize, tileSize, backgroundColor);
 
-    await Promise.all(filePromises);
+    await Promise.all(configurations.map(async ({left, top, width, height, scale, tilePath}) => {
+        const cropped = await crop(maxZoomImage, left, top, width, height);
+        const tile = cropped.resize(cropped.getWidth() * scale, Jimp.AUTO);
+
+        await tileBackground.clone().blit(tile, 0, 0).writeAsync(path.join(destination, tilePath))
+    }));
+
+    const params = getParams({imageSize, shouldCenter, maxImageZoom, zoomRange, tileSize, pathTemplate});
+    await fs.promises.writeFile(path.join(destination, 'params.json'), JSON.stringify(params, null, 4));
+}
+
+async function crop(img: Jimp, x: number, y: number, width: number, height: number): Promise<Jimp> {
+    let bitmap: Buffer;
+
+    if (x === 0 && width === img.bitmap.width) {
+        const start = (width * y + x) << 2;
+        const end = start + ((height * width) << 2);
+
+        bitmap = img.bitmap.data.subarray(start, end);
+    } else {
+        bitmap = Buffer.allocUnsafe(width * height * 4);
+        let offset = 0;
+
+        img.scanQuiet(x, y, width, height, function (x, y, idx) {
+            const data = img.bitmap.data.readUInt32BE(idx);
+            bitmap.writeUInt32BE(data, offset);
+            offset += 4;
+        });
+    }
+
+    const res = await Jimp.create(width, height);
+    res.bitmap.data = bitmap;
+
+    return res;
 }
 
 export interface GetTilesRangeOptions {
