@@ -1,6 +1,6 @@
-import type {GenericBounds, MMapProps, MapMode, WorldOptions, ZoomRange} from '@mappable-world/mappable-types';
 import fs from 'node:fs';
 import path from 'node:path';
+import type {GenericBounds, MMapProps, MapMode, WorldOptions, ZoomRange} from '@mappable-world/mappable-types';
 import Jimp from 'jimp';
 
 export interface GenerationOptions {
@@ -56,7 +56,7 @@ export async function generateTiles(source: string, destination: string, options
     const imageSize: ImageSize = {width: image.getWidth(), height: image.getHeight()};
     const configurations: Configuration[] = [];
 
-    for (let zoom = zoomRange.max; zoom >= zoomRange.min; zoom--) {
+    for (let zoom = zoomRange.min; zoom <= zoomRange.max; zoom++) {
         const [minX, minY, maxX, maxY] = getTilesRange({
             zoom,
             maxImageZoom,
@@ -65,7 +65,8 @@ export async function generateTiles(source: string, destination: string, options
             shouldCenter,
             imageSize
         });
-        const zoomTileSize = tileSize * Math.pow(2, zoomRange.max - zoom);
+        const zoomWorldSize = Math.pow(2, maxImageZoom - zoom);
+        const zoomTileSize = tileSize * zoomWorldSize;
 
         for (let x = minX; x < maxX; x++) {
             for (let y = minY; y < maxY; y++) {
@@ -73,7 +74,7 @@ export async function generateTiles(source: string, destination: string, options
                 const top = y * zoomTileSize;
                 const width = Math.min(zoomTileSize, maxZoomImage.getWidth() - left);
                 const height = Math.min(zoomTileSize, maxZoomImage.getHeight() - top);
-                const scale = 1 / Math.pow(2, maxImageZoom - zoom);
+                const scale = 1 / zoomWorldSize;
                 const tilePath = pathTemplate
                     .replace('{{x}}', String(x))
                     .replace('{{y}}', String(y))
@@ -193,20 +194,20 @@ export function getParams(options: GetParamsOptions): Params {
     const {tileSize, imageSize, maxImageZoom, shouldCenter, pathTemplate, zoomRange} = options;
 
     const imageHalfSize = {width: imageSize.width / 2, height: imageSize.height / 2};
-    const worldSize = Math.pow(2, maxImageZoom) * tileSize;
-    const halfWorldSize = worldSize / 2;
+    const worldTileSize = Math.pow(2, maxImageZoom) * tileSize;
+    const halfWorldTileSize = worldTileSize / 2;
 
     return {
         image: imageSize,
         projection: {
             bounds: shouldCenter
                 ? [
-                      [-halfWorldSize, -halfWorldSize],
-                      [halfWorldSize, halfWorldSize]
+                      [-halfWorldTileSize, -halfWorldTileSize],
+                      [halfWorldTileSize, halfWorldTileSize]
                   ]
                 : [
-                      [-imageHalfSize.width, imageHalfSize.height - worldSize],
-                      [worldSize - imageHalfSize.width, imageHalfSize.height]
+                      [-imageHalfSize.width, imageHalfSize.height - worldTileSize],
+                      [worldTileSize - imageHalfSize.width, imageHalfSize.height]
                   ],
             cycled: [false, false]
         },
