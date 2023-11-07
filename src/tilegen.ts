@@ -46,10 +46,14 @@ export async function generateTiles(source: string, destination: string, options
         max: computedOptions.zoomRange.max ?? maxImageZoom
     };
 
-    const maxZoomImage = await getMaxZoomImage(image, {zoomRange, tileSize, maxImageZoom, shouldCenter, backgroundColor});
-
+    const maxZoomImage = await getMaxZoomImage(image, {
+        zoomRange,
+        tileSize,
+        maxImageZoom,
+        shouldCenter,
+        backgroundColor
+    });
     const imageSize: ImageSize = {width: image.getWidth(), height: image.getHeight()};
-
     const configurations: Configuration[] = [];
 
     for (let zoom = zoomRange.max; zoom >= zoomRange.min; zoom--) {
@@ -82,12 +86,14 @@ export async function generateTiles(source: string, destination: string, options
 
     const tileBackground = await Jimp.create(tileSize, tileSize, backgroundColor);
 
-    await Promise.all(configurations.map(async ({left, top, width, height, scale, tilePath}) => {
-        const cropped = await crop(maxZoomImage, left, top, width, height);
-        const tile = cropped.resize(cropped.getWidth() * scale, Jimp.AUTO);
+    await Promise.all(
+        configurations.map(async ({left, top, width, height, scale, tilePath}) => {
+            const cropped = await crop(maxZoomImage, left, top, width, height);
+            const tile = cropped.resize(cropped.getWidth() * scale, Jimp.AUTO);
 
-        await tileBackground.clone().blit(tile, 0, 0).writeAsync(path.join(destination, tilePath))
-    }));
+            await tileBackground.clone().blit(tile, 0, 0).writeAsync(path.join(destination, tilePath));
+        })
+    );
 
     const params = getParams({imageSize, shouldCenter, maxImageZoom, zoomRange, tileSize, pathTemplate});
     await fs.promises.writeFile(path.join(destination, 'params.json'), JSON.stringify(params, null, 4));

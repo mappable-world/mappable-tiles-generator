@@ -10,7 +10,7 @@
         "build": "rm -rf ./dist && tsc --project tsconfig.build.json",
         "watch": "npm run build -- --watch",
         "examples:image:load": "curl 'https://stsci-opo.org/STScI-01GA6KKWG229B16K4Q38CH3BXS.png' > example/image.png",
-        "examples:tiles:gererate": "rm -rf example/tiles && node dist/index.js --s example/image.png --d example/tiles",
+        "examples:tiles:gererate": "rm -rf example/tiles && node dist/index.js --s example/image.png --d example/tiles --minZoom 3",
         "examples:build": "npm run examples:image:load && npm run examples:tiles:gererate",
         "examples": "webpack serve",
         "bump": "npm version patch --no-git-tag-version && npm run bump:git",
