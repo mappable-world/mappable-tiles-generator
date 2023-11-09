@@ -14,7 +14,7 @@ export class WorkerPool {
     public constructor(
         workerPath: string,
         workerData?: any,
-        count: number = os.availableParallelism?.() || os.cpus().length
+        count: number = os.availableParallelism?.() || os.cpus().length || 1
     ) {
         if (count < 1) return;
 
