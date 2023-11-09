@@ -97,7 +97,9 @@ describe('Tilegen utility', () => {
         it('should work correctly with "shouldCenter: true"', async () => {
             const maxZoomImage = await getMaxZoomImage(await image, {...props, shouldCenter: true});
             let result = await backgroundImage;
-            result = result.clone().blit(await image, (worldSize - imageSize.width) / 2, (worldSize - imageSize.height) / 2);
+            result = result
+                .clone()
+                .blit(await image, (worldSize - imageSize.width) / 2, (worldSize - imageSize.height) / 2);
 
             expect(await maxZoomImage.getBase64Async(Jimp.AUTO)).toBe(await result.getBase64Async(Jimp.AUTO));
         });

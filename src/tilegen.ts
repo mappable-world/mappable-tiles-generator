@@ -1,7 +1,9 @@
-import type {GenericBounds, MMapProps, MapMode, WorldOptions, ZoomRange} from '@mappable-world/mappable-types';
 import fs from 'node:fs';
 import path from 'node:path';
+import type {GenericBounds, MMapProps, MapMode, WorldOptions, ZoomRange} from '@mappable-world/mappable-types';
 import Jimp from 'jimp';
+import {WorkerPool} from './worker-pool';
+import { Configuration, WorkerData } from './worker';
 
 export interface GenerationOptions {
     tileSize?: number;
@@ -17,7 +19,7 @@ export interface ImageSize {
     height: number;
 }
 
-const defaultOptions: Required<GenerationOptions> = {
+export const defaultOptions: Required<GenerationOptions> = {
     tileSize: 256,
     zoomRange: {},
     shouldCenter: false,
@@ -37,16 +39,17 @@ export async function generateTiles(source: string, destination: string, options
         max: computedOptions.zoomRange.max ?? maxImageZoom
     };
 
-    const maxZoomImage = await getMaxZoomImage(image, {zoomRange, tileSize, maxImageZoom, shouldCenter, backgroundColor});
-
+    const maxZoomImage = await getMaxZoomImage(image, {
+        zoomRange,
+        tileSize,
+        maxImageZoom,
+        shouldCenter,
+        backgroundColor
+    });
     const imageSize: ImageSize = {width: image.getWidth(), height: image.getHeight()};
+    const configurations: Configuration[] = [];
 
-    const filePromises: Promise<unknown>[] = [];
-    const tileBackground = await Jimp.create(tileSize, tileSize, backgroundColor);
-
-    for (let zoom = zoomRange.max; zoom >= zoomRange.min; zoom--) {
-        const zoomImage =
-            zoom === zoomRange.max ? maxZoomImage : maxZoomImage.resize(maxZoomImage.getWidth() / 2, Jimp.AUTO);
+    for (let zoom = zoomRange.min; zoom <= zoomRange.max; zoom++) {
         const [minX, minY, maxX, maxY] = getTilesRange({
             zoom,
             maxImageZoom,
@@ -55,32 +58,45 @@ export async function generateTiles(source: string, destination: string, options
             shouldCenter,
             imageSize
         });
+        const zoomWorldSize = Math.pow(2, zoomRange.max - zoom);
+        const zoomTileSize = tileSize * zoomWorldSize;
 
         for (let x = minX; x < maxX; x++) {
             for (let y = minY; y < maxY; y++) {
-                const left = x * tileSize;
-                const top = y * tileSize;
-                const width = Math.min(tileSize, zoomImage.getWidth() - left);
-                const height = Math.min(tileSize, zoomImage.getHeight() - top);
+                const left = x * zoomTileSize;
+                const top = y * zoomTileSize;
+                const width = Math.min(zoomTileSize, maxZoomImage.getWidth() - left);
+                const height = Math.min(zoomTileSize, maxZoomImage.getHeight() - top);
+                const scale = 1 / zoomWorldSize;
                 const tilePath = pathTemplate
                     .replace('{{x}}', String(x))
                     .replace('{{y}}', String(y))
                     .replace('{{z}}', String(zoom));
 
-                filePromises.push(
-                    tileBackground
-                        .clone()
-                        .blit(zoomImage, 0, 0, left, top, width, height)
-                        .writeAsync(path.join(destination, tilePath))
-                );
+                configurations.push({left, top, width, height, scale, tilePath});
             }
         }
     }
 
-    const params = getParams({imageSize, shouldCenter, maxImageZoom, zoomRange, tileSize, pathTemplate});
-    filePromises.push(fs.promises.writeFile(path.join(destination, 'params.json'), JSON.stringify(params, null, 4)));
+    const workerData: WorkerData = {
+        tileSize,
+        backgroundColor,
+        destination,
+        image: maxZoomImage.bitmap
+    };
 
-    await Promise.all(filePromises);
+    const pool = new WorkerPool(path.join(__dirname, 'worker.js'), workerData);
+
+    await Promise.all(
+        configurations.map(async (configuration) => {
+            await pool.run(() => configuration);
+        })
+    );
+
+    pool.destructor();
+
+    const params = getParams({imageSize, shouldCenter, maxImageZoom, zoomRange, tileSize, pathTemplate});
+    await fs.promises.writeFile(path.join(destination, 'params.json'), JSON.stringify(params, null, 4));
 }
 
 export interface GetTilesRangeOptions {
@@ -152,20 +168,20 @@ export function getParams(options: GetParamsOptions): Params {
     const {tileSize, imageSize, maxImageZoom, shouldCenter, pathTemplate, zoomRange} = options;
 
     const imageHalfSize = {width: imageSize.width / 2, height: imageSize.height / 2};
-    const worldSize = Math.pow(2, maxImageZoom) * tileSize;
-    const halfWorldSize = worldSize / 2;
+    const worldTileSize = Math.pow(2, maxImageZoom) * tileSize;
+    const halfWorldTileSize = worldTileSize / 2;
 
     return {
         image: imageSize,
         projection: {
             bounds: shouldCenter
                 ? [
-                      [-halfWorldSize, -halfWorldSize],
-                      [halfWorldSize, halfWorldSize]
+                      [-halfWorldTileSize, -halfWorldTileSize],
+                      [halfWorldTileSize, halfWorldTileSize]
                   ]
                 : [
-                      [-imageHalfSize.width, imageHalfSize.height - worldSize],
-                      [worldSize - imageHalfSize.width, imageHalfSize.height]
+                      [-imageHalfSize.width, imageHalfSize.height - worldTileSize],
+                      [worldTileSize - imageHalfSize.width, imageHalfSize.height]
                   ],
             cycled: [false, false]
         },
